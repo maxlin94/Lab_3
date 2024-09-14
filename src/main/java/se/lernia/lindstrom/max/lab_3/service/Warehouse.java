@@ -3,8 +3,8 @@ package se.lernia.lindstrom.max.lab_3.service;
 import se.lernia.lindstrom.max.lab_3.entities.Category;
 import se.lernia.lindstrom.max.lab_3.entities.Product;
 
+import java.time.LocalDate;
 import java.util.*;
-import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 public class Warehouse {
@@ -25,7 +25,7 @@ public class Warehouse {
                 newCategory,
                 newRating,
                 existingProduct.creationDate(),
-                LocalDateTime.now()
+                LocalDate.now()
         );
         products.remove(existingProduct);
         products.add(modifiedProduct);
@@ -45,11 +45,11 @@ public class Warehouse {
     public List<Product> getProductsByCategory(Category category) {
         return products.stream()
                 .filter(product -> product.category().equals(category))
-                .sorted(Comparator.comparing(Product::name))
+                .sorted(Comparator.comparing(product -> product.name().toLowerCase()))
                 .collect(Collectors.toList());
     }
 
-    public List<Product> getProductsCreatedAfter(LocalDateTime date) {
+    public List<Product> getProductsCreatedAfter(LocalDate date) {
         return products.stream()
                 .filter(product -> product.creationDate().isAfter(date))
                 .collect(Collectors.toList());
@@ -88,7 +88,7 @@ public class Warehouse {
 
     public List<Product> getMaxRatedProductsLastMonth() {
         return products.stream()
-                .filter(product -> product.rating() == 10 && product.creationDate().isAfter(LocalDateTime.now().minusMonths(1)))
+                .filter(product -> product.rating() == 10 && product.creationDate().isAfter(LocalDate.now().minusMonths(1)))
                 .sorted(Comparator.comparing(Product::creationDate))
                 .collect(Collectors.toList());
     }
