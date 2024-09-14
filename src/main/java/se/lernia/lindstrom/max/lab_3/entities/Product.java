@@ -1,6 +1,6 @@
 package se.lernia.lindstrom.max.lab_3.entities;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public record Product(
@@ -8,8 +8,8 @@ public record Product(
         String name,
         Category category,
         int rating,
-        LocalDateTime creationDate,
-        LocalDateTime lastModifiedDate
+        LocalDate creationDate,
+        LocalDate lastModifiedDate
 ) {
     public Product {
         if (name == null || name.isBlank()) {
@@ -24,5 +24,15 @@ public record Product(
         Objects.requireNonNull(category, "Category cannot be null");
         Objects.requireNonNull(creationDate, "Creation date cannot be null");
         Objects.requireNonNull(lastModifiedDate, "Last modification date cannot be null");
+    }
+
+    @Override
+    public String toString() {
+        return "Product ID: " + id +
+                ", Name: " + name +
+                ", Category: " + category +
+                ", Rating: " + rating +
+                ", Creation Date: " + creationDate +
+                ", Last Modified Date: " + lastModifiedDate;
     }
 }

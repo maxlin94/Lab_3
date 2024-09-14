@@ -4,13 +4,13 @@ import org.junit.jupiter.api.Test;
 import se.lernia.lindstrom.max.lab_3.entities.Category;
 import se.lernia.lindstrom.max.lab_3.entities.Product;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ProductTest {
-    private static final LocalDateTime now = LocalDateTime.now();
+    private static final LocalDate now = LocalDate.now();
 
     @Test
     void testValidProduct() {

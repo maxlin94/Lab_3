@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import se.lernia.lindstrom.max.lab_3.entities.Product;
 import se.lernia.lindstrom.max.lab_3.service.Warehouse;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ class WarehouseTest {
     @BeforeEach
     void setUp() {
         warehouse = new Warehouse();
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
         product1 = new Product("1", "Shirt", Category.SHIRT, 8, now.minusDays(2), now.minusDays(1));
         Product product2 = new Product("2", "Hoodie", Category.HOODIE, 6, now.minusDays(5), now.minusDays(5));
         Product product3 = new Product("3", "Jeans", Category.JEANS, 10, now.minusDays(2), now.minusDays(2));
@@ -40,7 +40,7 @@ class WarehouseTest {
     @Test
     void testAddProduct() {
         assertEquals(TOTAL_PRODUCTS, warehouse.getAllProducts().size());
-        Product product = new Product("123", "Shirt", Category.SHIRT, 8, LocalDateTime.now(), LocalDateTime.now());
+        Product product = new Product("123", "Shirt", Category.SHIRT, 8, LocalDate.now(), LocalDate.now());
         warehouse.addProduct(product);
         assertEquals(TOTAL_PRODUCTS + 1, warehouse.getAllProducts().size());
     }
@@ -83,7 +83,7 @@ class WarehouseTest {
 
     @Test
     void testGetProductsCreatedAfter() {
-        assertEquals(2, warehouse.getProductsCreatedAfter(LocalDateTime.now().minusDays(3)).size());
+        assertEquals(2, warehouse.getProductsCreatedAfter(LocalDate.now().minusDays(3)).size());
     }
 
     @Test
@@ -117,6 +117,6 @@ class WarehouseTest {
         List<Product> products = warehouse.getMaxRatedProductsLastMonth();
         assertEquals(1, products.size());
         assertTrue(products.stream().allMatch(product ->
-                product.rating() == 10 && product.creationDate().isAfter(LocalDateTime.now().minusMonths(1))));
+                product.rating() == 10 && product.creationDate().isAfter(LocalDate.now().minusMonths(1))));
     }
 }
