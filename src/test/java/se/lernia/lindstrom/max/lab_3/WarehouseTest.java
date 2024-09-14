@@ -57,6 +57,7 @@ class WarehouseTest {
         Product modifiedProduct = warehouse.getProductById("1");
         assertEquals("New Shirt", modifiedProduct.name());
         assertEquals(9, modifiedProduct.rating());
+        assertTrue(modifiedProduct.creationDate().isBefore(modifiedProduct.lastModifiedDate()));
     }
 
     @Test
@@ -86,8 +87,10 @@ class WarehouseTest {
     }
 
     @Test
-    void testGetProductsModifiedSinceCreation() {
-        assertEquals(2, warehouse.getModifiedProducts().size());
+    void testGetModifiedProducts() {
+        List<Product> products = warehouse.getModifiedProducts();
+        assertEquals(2, products.size());
+        assertTrue(products.stream().allMatch(product -> product.lastModifiedDate().isAfter(product.creationDate())));
     }
 
     @Test
@@ -111,6 +114,9 @@ class WarehouseTest {
 
     @Test
     void testGetMaxRatedProductsLastMonth() {
-        assertEquals(1, warehouse.getMaxRatedProductsLastMonth().size());
+        List<Product> products = warehouse.getMaxRatedProductsLastMonth();
+        assertEquals(1, products.size());
+        assertTrue(products.stream().allMatch(product ->
+                product.rating() == 10 && product.creationDate().isAfter(LocalDateTime.now().minusMonths(1))));
     }
 }
