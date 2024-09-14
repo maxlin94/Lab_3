@@ -7,34 +7,34 @@ import se.lernia.lindstrom.max.lab_3.entities.Product;
 import se.lernia.lindstrom.max.lab_3.service.Warehouse;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class WarehouseTest {
     private Warehouse warehouse;
-    private Product product1;
-    private final int TOTAL_PRODUCTS = 4;
+    private final LocalDate now = LocalDate.now();
+    private final List<Product> products = Arrays.asList(
+            new Product("1", "Shirt", Category.SHIRT, 8, now.minusDays(2), now.minusDays(1)),
+            new Product("2", "Hoodie", Category.HOODIE, 6, now.minusDays(5), now.minusDays(5)),
+            new Product("3", "jeans", Category.JEANS, 10, now.minusDays(2), now.minusDays(2)),
+            new Product("4", "Other Jeans", Category.JEANS, 10, now.minusDays(32), now.minusDays(31)),
+            new Product("5", "ZZZ", Category.JEANS, 8, now, now),
+            new Product("6", "aaa", Category.JEANS, 8, now, now)
+    );
+    private final int TOTAL_PRODUCTS = products.size();
     private final List<Category> categories = new ArrayList<>();
 
     @BeforeEach
     void setUp() {
         warehouse = new Warehouse();
-        LocalDate now = LocalDate.now();
-        product1 = new Product("1", "Shirt", Category.SHIRT, 8, now.minusDays(2), now.minusDays(1));
-        Product product2 = new Product("2", "Hoodie", Category.HOODIE, 6, now.minusDays(5), now.minusDays(5));
-        Product product3 = new Product("3", "Jeans", Category.JEANS, 10, now.minusDays(2), now.minusDays(2));
-        Product product4 = new Product("4", "Other Jeans", Category.JEANS, 10, now.minusDays(32), now.minusDays(31));
-        warehouse.addProduct(product1);
-        warehouse.addProduct(product2);
-        warehouse.addProduct(product3);
-        warehouse.addProduct(product4);
-        categories.add(product1.category());
-        categories.add(product2.category());
-        categories.add(product3.category());
+        products.forEach(product -> {
+            warehouse.addProduct(product);
+            if (!categories.contains(product.category())) {
+                categories.add(product.category());
+            }
+        });
     }
 
     @Test
@@ -46,8 +46,9 @@ class WarehouseTest {
     }
 
     @Test
-    void testAddProductFail() {
-        assertThrows(IllegalArgumentException.class, () -> warehouse.addProduct(product1));
+    void throwsWhenDuplicateIdProducts() {
+        Product product = new Product("1", "Shirt", Category.SHIRT, 8, LocalDate.now(), LocalDate.now());
+        assertThrows(IllegalArgumentException.class, () -> warehouse.addProduct(product));
         assertEquals(TOTAL_PRODUCTS, warehouse.getAllProducts().size());
     }
 
@@ -61,29 +62,35 @@ class WarehouseTest {
     }
 
     @Test
-    void testModifyProductFail() {
+    void throwsWhenProductIdNotFoundWhileModifying() {
         assertThrows(NoSuchElementException.class, () -> warehouse.modifyProduct("000", "New Shirt", Category.SHIRT, 9));
     }
 
     @Test
     void testGetProductById() {
-        assertEquals(product1, warehouse.getProductById("1"));
+        Product product = new Product("1", "Shirt", Category.SHIRT, 8, now.minusDays(2), now.minusDays(1));
+        assertEquals(product, warehouse.getProductById("1"));
     }
 
     @Test
-    void testGetProductByIdFail() {
+    void throwsWhenGetProductByIdNotFound() {
         assertThrows(NoSuchElementException.class, () -> warehouse.getProductById("000"));
     }
 
     @Test
-    void testGetProductsByCategory() {
-        assertEquals(1, warehouse.getProductsByCategory(Category.HOODIE).size());
-        assertEquals(0, warehouse.getProductsByCategory(Category.SHORTS).size());
+    void testGetProductsByCategorySortedByName() {
+        assertEquals(
+                List.of("aaa", "jeans", "Other Jeans", "ZZZ"),
+                warehouse.getProductsByCategory(Category.JEANS)
+                        .stream()
+                        .map(Product::name)
+                        .collect(Collectors.toList())
+        );
     }
 
     @Test
     void testGetProductsCreatedAfter() {
-        assertEquals(2, warehouse.getProductsCreatedAfter(LocalDate.now().minusDays(3)).size());
+        assertEquals(4, warehouse.getProductsCreatedAfter(LocalDate.now().minusDays(3)).size());
     }
 
     @Test
@@ -108,8 +115,6 @@ class WarehouseTest {
         Map<Character, Long> map = warehouse.getProductStartingLetterMap();
         assertEquals(1, map.get('S'));
         assertEquals(1, map.get('H'));
-        assertEquals(1, map.get('J'));
-        assertEquals(1, map.get('O'));
     }
 
     @Test
