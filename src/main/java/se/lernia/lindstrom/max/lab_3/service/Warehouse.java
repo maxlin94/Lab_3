@@ -19,9 +19,6 @@ public class Warehouse {
 
     public void modifyProduct(String id, String newName, Category newCategory, int newRating) {
         Product existingProduct = getProductById(id);
-        if (existingProduct == null) {
-            throw new NoSuchElementException("Product with ID " + id + " not found");
-        }
         Product modifiedProduct = new Product(
                 existingProduct.id(),
                 newName,
