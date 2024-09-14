@@ -58,9 +58,7 @@ class WarehouseTest {
 
     @Test
     void testModifyProductFail() {
-        assertThrows(NoSuchElementException.class, () -> {
-            warehouse.modifyProduct("000", "New Shirt", Category.SHIRT, 9);
-        });
+        assertThrows(NoSuchElementException.class, () -> warehouse.modifyProduct("000", "New Shirt", Category.SHIRT, 9));
     }
 
     @Test
@@ -70,9 +68,7 @@ class WarehouseTest {
 
     @Test
     void testGetProductByIdFail() {
-        assertThrows(NoSuchElementException.class, () -> {
-            warehouse.getProductById("000");
-        });
+        assertThrows(NoSuchElementException.class, () -> warehouse.getProductById("000"));
     }
 
     @Test
