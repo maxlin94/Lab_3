@@ -23,10 +23,11 @@ class WarehouseTest {
     @BeforeEach
     void setUp() {
         warehouse = new Warehouse();
-        product1 = new Product("1", "Shirt", Category.SHIRT, 8, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(1));
-        Product product2 = new Product("2", "Hoodie", Category.HOODIE, 6, LocalDateTime.now().minusDays(5), LocalDateTime.now().minusDays(5));
-        Product product3 = new Product("3", "Jeans", Category.JEANS, 10, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2));
-        Product product4 = new Product("4", "Other Jeans", Category.JEANS, 10, LocalDateTime.now().minusDays(32), LocalDateTime.now().minusDays(31));
+        LocalDateTime now = LocalDateTime.now();
+        product1 = new Product("1", "Shirt", Category.SHIRT, 8, now.minusDays(2), now.minusDays(1));
+        Product product2 = new Product("2", "Hoodie", Category.HOODIE, 6, now.minusDays(5), now.minusDays(5));
+        Product product3 = new Product("3", "Jeans", Category.JEANS, 10, now.minusDays(2), now.minusDays(2));
+        Product product4 = new Product("4", "Other Jeans", Category.JEANS, 10, now.minusDays(32), now.minusDays(31));
         warehouse.addProduct(product1);
         warehouse.addProduct(product2);
         warehouse.addProduct(product3);
@@ -39,12 +40,14 @@ class WarehouseTest {
     @Test
     void testAddProduct() {
         assertEquals(TOTAL_PRODUCTS, warehouse.getAllProducts().size());
+        Product product = new Product("123", "Shirt", Category.SHIRT, 8, LocalDateTime.now(), LocalDateTime.now());
+        warehouse.addProduct(product);
+        assertEquals(TOTAL_PRODUCTS + 1, warehouse.getAllProducts().size());
     }
 
     @Test
     void testAddProductFail() {
-        Product product = new Product("1", "Jeans", Category.JEANS, 7, LocalDateTime.now().minusDays(2), LocalDateTime.now().minusDays(2));
-        assertThrows(IllegalArgumentException.class, () -> warehouse.addProduct(product));
+        assertThrows(IllegalArgumentException.class, () -> warehouse.addProduct(product1));
         assertEquals(TOTAL_PRODUCTS, warehouse.getAllProducts().size());
     }
 
