@@ -55,26 +55,25 @@ class WarehouseTest {
     @Test
     void testModifyProduct() {
         warehouse.modifyProduct("1", "New Shirt", Category.SHIRT, 9);
-        Product modifiedProduct = warehouse.getProductById("1");
-        assertEquals("New Shirt", modifiedProduct.name());
-        assertEquals(9, modifiedProduct.rating());
-        assertTrue(modifiedProduct.creationDate().isBefore(modifiedProduct.lastModifiedDate()));
-    }
-
-    @Test
-    void throwsWhenProductIdNotFoundWhileModifying() {
-        assertThrows(NoSuchElementException.class, () -> warehouse.modifyProduct("000", "New Shirt", Category.SHIRT, 9));
+        Optional<Product> modifiedProduct = warehouse.getProductById("1");
+        modifiedProduct.ifPresent(product -> {
+            assertEquals("New Shirt", product.name());
+            assertEquals(9, product.rating());
+            assertTrue(product.creationDate().isBefore(product.lastModifiedDate()));
+        });
     }
 
     @Test
     void testGetProductById() {
         Product product = new Product("1", "Shirt", Category.SHIRT, 8, now.minusDays(2), now.minusDays(1));
-        assertEquals(product, warehouse.getProductById("1"));
+        Optional<Product> optionalProduct = warehouse.getProductById("1");
+        assertTrue(optionalProduct.isPresent());
+        assertEquals(product, optionalProduct.get());
     }
 
     @Test
-    void throwsWhenGetProductByIdNotFound() {
-        assertThrows(NoSuchElementException.class, () -> warehouse.getProductById("000"));
+    void testEmptyOptionalWhenIDNotFound() {
+        assertTrue(warehouse.getProductById("000").isEmpty());
     }
 
     @Test

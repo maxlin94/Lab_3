@@ -18,28 +18,29 @@ public class Warehouse {
     }
 
     public void modifyProduct(String id, String newName, Category newCategory, int newRating) {
-        Product existingProduct = getProductById(id);
-        Product modifiedProduct = new Product(
-                existingProduct.id(),
-                newName,
-                newCategory,
-                newRating,
-                existingProduct.creationDate(),
-                LocalDate.now()
-        );
-        products.remove(existingProduct);
-        products.add(modifiedProduct);
+        Optional<Product> existingProduct = getProductById(id);
+        existingProduct.ifPresent(product -> {
+            Product modifiedProduct = new Product(
+                    product.id(),
+                    newName,
+                    newCategory,
+                    newRating,
+                    product.creationDate(),
+                    LocalDate.now()
+            );
+            products.remove(product);
+            products.add(modifiedProduct);
+        });
     }
 
     public List<Product> getAllProducts() {
         return List.copyOf(products);
     }
 
-    public Product getProductById(String id) {
+    public Optional<Product> getProductById(String id) {
         return products.stream()
                 .filter(product -> product.id().equals(id))
-                .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("Product with ID " + id + " not found"));
+                .findFirst();
     }
 
     public List<Product> getProductsByCategory(Category category) {
